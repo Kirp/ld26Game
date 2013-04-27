@@ -34,6 +34,11 @@ class StageManager extends Component
 		owner.addChild(genEnt);
 	}
 	
+	public function sayHitBoxList():Array<Entity>
+	{
+		return arrCollidableBlockList;
+	}
+	
 	public function isRectangleCollidingWithStageList(checker:Rectangle):Bool
 	{
 		var SideX:Bool = false;

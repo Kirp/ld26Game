@@ -1,6 +1,8 @@
 package ;
 import flambe.Component;
 import flambe.display.FillSprite;
+import flambe.display.ImageSprite;
+import flambe.math.Rectangle;
 
 /**
  * ...
@@ -9,7 +11,9 @@ import flambe.display.FillSprite;
 
 class Hero extends Component
 {	
-	public var mySprite:FillSprite;
+	public var floatMyWidth:Float = 32;
+	public var floatMyHeight:Float = 32;
+	public var mySprite:ImageSprite;
 	public var floatStartingPointx:Float = 0;
 	public var floatStartingPointy:Float = 0;
 	
@@ -22,7 +26,16 @@ class Hero extends Component
 	override public function onAdded():Dynamic 
 	{
 		super.onAdded();
-		owner.add(mySprite = new FillSprite(0x000099, 32, 32));
+		owner.add(mySprite = new ImageSprite(AssetHolder.pack.getTexture("squareFaceTemplate32x32")));
 		mySprite.setXY(floatStartingPointx, floatStartingPointy);
+		owner.add(new MovableEntityData(floatMyWidth, floatMyHeight));
+		owner.add(new GravityEffect());
+		owner.add(new Movable());
+	}
+	
+	public function sayHitBox():Rectangle
+	{
+		var myHitBox = new Rectangle(mySprite.x._, mySprite.y._, floatMyWidth, floatMyHeight);
+		return myHitBox;
 	}
 }

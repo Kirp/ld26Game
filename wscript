@@ -10,7 +10,7 @@ def configure(ctx):
 
 # Runs the build!
 def build(ctx):
-    platforms = ["flash", "html"]
+    platforms = ["html"]
 
     # Android builds require the Android SDK
     if ctx.env.has_android: platforms += ["android"]

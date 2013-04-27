@@ -34,7 +34,7 @@ class GameAlphaStage extends Component
 	private function onPointerRelease(event:PointerEvent) 
 	{
 		trace("released");
-		entPlayer.get(Jumper).stopJump();
+		//entPlayer.get(Jumper).stopJump();
 	}
 	
 	private function onPointerClick(event:PointerEvent) 

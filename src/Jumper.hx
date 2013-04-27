@@ -10,7 +10,8 @@ import flambe.display.Sprite;
 class Jumper extends Component
 {
 	public var boolIsJumping:Bool = false;
-
+	public var intJumpTime:Int = 0;
+	
 	public function new() 
 	{
 		
@@ -26,16 +27,26 @@ class Jumper extends Component
 		super.onUpdate(dt);
 		if (boolIsJumping)
 		{
-			owner.get(Sprite).y._ -= ConstantHolder.JUMPSPEED;
-			
+			if (intJumpTime < ConstantHolder.JUMPTIME)
+			{
+				owner.get(Sprite).y._ -= ConstantHolder.JUMPSPEED;
+				intJumpTime++;
+			}else 
+				{
+					intJumpTime = 0;
+					stopJump();
+				}
 		} 
 	}
 	
 	public function jump():Void
 	{
-		boolIsJumping = true;
-		//jump
-		owner.get(GravityEffect).Jumping();
+		var grGravityData:GravityEffect = owner.get(GravityEffect);
+		if (grGravityData.boolOnGround == true && boolIsJumping == false)
+		{
+			grGravityData.Jumping();
+			boolIsJumping = true;
+		}
 	}
 	
 	public function stopJump():Void

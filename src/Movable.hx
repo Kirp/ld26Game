@@ -33,10 +33,10 @@ class Movable extends Component
 		if (boolCanMove)
 		{	
 			var generateRect = owner.get(Hero).sayHitBox();
-			generateRect.x += ConstantHolder.GRAVITYVELOCITY * intMovementDirection;
+			generateRect.x += ConstantHolder.WALKSPEED * intMovementDirection;
 			if (GameAlphaStage.isRectangleCollidingWithStageList(generateRect) == false)
 			{
-				owner.get(Sprite).x._ += ConstantHolder.GRAVITYVELOCITY *intMovementDirection;
+				owner.get(Sprite).x._ += ConstantHolder.WALKSPEED *intMovementDirection;
 			}else intMovementDirection *= -1;
 		}
 	}

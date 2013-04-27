@@ -8,12 +8,12 @@ import flambe.math.Rectangle;
 
 class ConstantHolder 
 {
-	inline public static var GRAVITYVELOCITY = 1;
+	inline public static var GRAVITYVELOCITY = 5;
 	
-	inline public static var WALKSPEED = 1;
+	inline public static var WALKSPEED = 4;
 	
-	inline public static var JUMPSPEED = 1;
-	inline public static var JUMPHEIGHT = 10; 
+	inline public static var JUMPSPEED = 10;
+	inline public static var JUMPTIME = 10; 
 	
 	
 	

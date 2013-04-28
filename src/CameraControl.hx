@@ -2,6 +2,7 @@ package ;
 import flambe.Component;
 import flambe.display.Sprite;
 import flambe.Entity;
+import flambe.System;
 
 /**
  * ...
@@ -9,13 +10,30 @@ import flambe.Entity;
  */
 
 class CameraControl extends Component
-{
+{ 
 	public var floatCameraValueX:Float = 0;
 	public var floatCameraValueY:Float = 0;
 	public var sprTarget:Sprite;
 	
+	public var floatLeftborder:Float;
+	public var floatRightborder:Float;
+	public var floatTopborder:Float;
+	public var floatBotborder:Float;
+	
 	public function new() 
 	{
+		var stageWidth = System.stage.width;
+		var stageHeight = System.stage.height;
+		trace(stageWidth + " : " +stageHeight);
+		floatLeftborder = stageWidth * 0.4;
+		floatRightborder = stageWidth * 0.6;
+		floatTopborder = stageHeight * 0.3;
+		floatBotborder = stageHeight * 0.8;
+	}
+	
+	override public function onAdded():Dynamic 
+	{
+		super.onAdded();
 		
 	}
 	
@@ -30,6 +48,7 @@ class CameraControl extends Component
 	public function setTarget(sprTarg:Sprite):Void
 	{
 		sprTarget = sprTarg;
+		reset();
 		trace("Camera ready");
 	}
 	
@@ -37,8 +56,10 @@ class CameraControl extends Component
 	{
 		var sprOwner = owner.get(Sprite);
 		sprOwner.x._ = 0;
-		floatCameraValueX = sprTarget.x._-200;
-		trace(sprOwner.x._);
+		floatCameraValueX = ((System.stage.width / 2) - sprTarget.x._)*-1;
+		sprOwner.y._ =  0;
+		floatCameraValueY = ((System.stage.height / 2) - sprTarget.y._)*-1;
+		updateCameraPosition();
 	}
 	
 	override public function onUpdate(dt:Float):Dynamic 
@@ -46,18 +67,29 @@ class CameraControl extends Component
 		super.onUpdate(dt);
 		if (sprTarget != null)
 		{
-			if (sprTarget.x._ > floatCameraValueX+1000)
+			if (sprTarget.x._ > floatCameraValueX+floatRightborder)
 			{
 				floatCameraValueX += ConstantHolder.WALKSPEED;
 				updateCameraPosition();
 			}else
-				if(sprTarget.x._ < floatCameraValueX+200)
+				if(sprTarget.x._ < floatCameraValueX+floatLeftborder)
 				{
 					floatCameraValueX -= ConstantHolder.WALKSPEED;
 					updateCameraPosition();
 				}
+				
+			if (sprTarget.y._ > floatCameraValueY+floatBotborder)
+			{
+				floatCameraValueY += ConstantHolder.GRAVITYVELOCITY;
+				updateCameraPosition();
+			}else
+				if(sprTarget.y._ < floatCameraValueY+floatTopborder)
+				{
+					floatCameraValueY -= ConstantHolder.JUMPSPEED;
+					updateCameraPosition();
+				}
 		}
-		trace(owner.get(Sprite).x._);
+		
 	}
 	
 	

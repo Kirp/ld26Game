@@ -18,7 +18,10 @@ class GameAlphaStage extends Component
 {
 	public var entMainStageHolder:Entity;
 	public var entStageManager:Entity;
+	
+	public var entDoor:Entity;
 	public var entPlayer:Entity;
+	public var entTreasure:Entity;
 	public static var arrCollidableBlockList:Array<Entity>;
 	
 	public var scPointerClick:SignalConnection;
@@ -32,7 +35,7 @@ class GameAlphaStage extends Component
 		arrCollidableBlockList = [];
 		scPointerClick = System.pointer.down.connect(onPointerClick);
 		scPointerRelease = System.pointer.up.connect(onPointerRelease);
-		pointStartingPointPlayer = new Point(200,300);
+		pointStartingPointPlayer = new Point(200,512);
 	}
 	
 	private function onPointerRelease(event:PointerEvent) 
@@ -55,8 +58,9 @@ class GameAlphaStage extends Component
 		entMainStageHolder.add(new CameraControl());
 		owner.addChild(entMainStageHolder);
 		
-		var sprBG = new FillSprite(0x303030, 5000, 5000);
+		var sprBG = new FillSprite(0x303030, 8000, 5000);
 		sprBG.x._ -= 800;
+		sprBG.y._ -= 800;
 		entMainStageHolder.addChild(new Entity().add(sprBG));
 		
 		entStageManager = new Entity().add(new StageManager());
@@ -64,10 +68,14 @@ class GameAlphaStage extends Component
 		
 		loadUpStage();
 		
+		//load door
+		entStageManager.addChild(entDoor = new Entity().add(new SurfaceDoor(pointStartingPointPlayer.x, pointStartingPointPlayer.y)));
 		
+		//load treasure
+		entStageManager.addChild(entTreasure = new Entity().add(new Treasure(3840, 544)));
 		
 		//load up player
-		entStageManager.addChild(entPlayer = new Entity().add(new Hero(pointStartingPointPlayer.x, pointStartingPointPlayer.y)));
+		entStageManager.addChild(entPlayer = new Entity().add(new Hero(pointStartingPointPlayer.x+64, pointStartingPointPlayer.y)));
 		entPlayer.add(new Jumper());
 		
 		entMainStageHolder.get(CameraControl).setTarget(entPlayer.get(Sprite));
@@ -91,25 +99,20 @@ class GameAlphaStage extends Component
 		stageManager.addRow(2176, 512,  64,  64, 4);
 		stageManager.addRow(2368, 384,  64,  64, 4);
 		stageManager.addRow(2624, 320,  64,  64, 1);
+		stageManager.addColumn(2624, 192, 64, 64, 2);
 		stageManager.addRow(2048, 256,  64,  64, 4);
+		stageManager.addRow(1984, 192,  64,  64, 1);
+		stageManager.addRow(2368, 128,  64,  64, 10);
+		stageManager.addRow(3008, 576,  64,  64, 10);
+		stageManager.addRow(3648, 512,  64,  64, 1); //place treasure between these
+		stageManager.addRow(3712, 576,  64,  64, 5);
+		stageManager.addColumn(4032, 0, 64, 64, 10); //that and this
 		
-		//stageManager.addBlock(74, 364,  64,  64);
-		//stageManager.addBlock(138, 350,  64,  64);
-		//stageManager.addBlock(202, 350,  64,  64);
-		//stageManager.addBlock(266, 350,  64,  64);
-		//stageManager.addBlock(330, 350,  64,  64);
-		//stageManager.addBlock(394, 350,  64,  64);
-		//stageManager.addBlock(458, 350,  64,  64);
-		//stageManager.addBlock(522, 350,  64,  64);
-		//stageManager.addBlock(586, 300,  64,  64);
-		//stageManager.addBlock(650, 300,  64,  64);
-		//stageManager.addBlock(714, 300,  64,  64);
-		//stageManager.addBlock(778, 300,  64,  64);
-		//stageManager.addColumn(0, 0, 64, 64, 10);
-		//stageManager.addRow(778, 300,  64,  64, 10);
-		//stageManager.addRow(1610, 400,  64,  64, 10);
-		//stageManager.addRow(2314, 300,  64,  64, 10);
-		//stageManager.addColumn(2954, 0,  64,  64, 10);
+		stageManager.addRow(2752, 384,  64,  64, 4); //exit strategerie
+		stageManager.addRow(3072, 448,  64,  64, 1);
+		stageManager.addColumn(2752, 256,  64,  64, 6);
+		stageManager.addRow(2432, 512,  64,  64, 6);
+		
 		
 	}
 	
@@ -159,6 +162,51 @@ class GameAlphaStage extends Component
 		return finalB;
 	}
 	
+	public static function isRectangleCollidingWithRectangle(checker:Rectangle, base:Rectangle):Bool
+	{
+		var SideX:Bool = false;
+		var SideY:Bool = false;
+		var finalB:Bool = false;
+		var rectCheck:Rectangle = checker;
+		
+	
+		var Top:Bool = false;
+		var Bot:Bool = false;
+		var Left:Bool = false;
+		var Right:Bool = false;
+		
+		var sprStage = base;
+		
+		
+		if (rectCheck.y > sprStage.y ||
+			rectCheck.y + rectCheck.height > sprStage.y)
+			{
+				Top = true;
+			}
+		
+		if (rectCheck.y  < sprStage.y +sprStage.height ||
+			rectCheck.y + rectCheck.height < sprStage.y+sprStage.height)
+			{
+				Bot = true;
+			}
+			
+		if (rectCheck.x > sprStage.x ||
+			rectCheck.x + rectCheck.width > sprStage.x)
+			{
+				Left = true;
+			}
+			
+		if (rectCheck.x < sprStage.x +sprStage.width ||
+			rectCheck.x+rectCheck.width < sprStage.x + sprStage.width)
+			{
+				Right = true;
+			}
+		
+		if ((Top && Bot) && (Left && Right)) finalB = true;
+	
+		return finalB;
+	}
+	
 	override public function onUpdate(dt:Float):Dynamic 
 	{
 		super.onUpdate(dt);
@@ -168,6 +216,14 @@ class GameAlphaStage extends Component
 			entPlayer.get(Hero).reset(pointStartingPointPlayer.x, pointStartingPointPlayer.y);
 			entMainStageHolder.get(CameraControl).reset();
 		}
+		
+		
 	}
 	
+	override public function onRemoved():Dynamic 
+	{
+		super.onRemoved();
+		scPointerClick.dispose();
+		scPointerRelease.dispose();
+	}
 }

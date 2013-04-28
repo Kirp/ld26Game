@@ -23,8 +23,9 @@ class SurfaceDoor extends Component
 	override public function onAdded():Dynamic 
 	{
 		super.onAdded();
-		var sprDoor = new FillSprite(0x333300, 64, 64);
+		var sprDoor = new TileSheetDisplayScriptedAnimation(64, 64, AssetHolder.pack.getTexture("StageTiles64x64"));
 		sprDoor.setXY(floatMyx, floatMyy);
+		sprDoor.switchTileDisplay(1);
 		owner.add(sprDoor);
 	}
 	

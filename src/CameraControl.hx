@@ -27,8 +27,8 @@ class CameraControl extends Component
 		trace(stageWidth + " : " +stageHeight);
 		floatLeftborder = stageWidth * 0.4;
 		floatRightborder = stageWidth * 0.6;
-		floatTopborder = stageHeight * 0.3;
-		floatBotborder = stageHeight * 0.8;
+		floatTopborder = stageHeight * 0.2;
+		floatBotborder = stageHeight * 0.6;
 	}
 	
 	override public function onAdded():Dynamic 

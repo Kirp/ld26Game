@@ -31,6 +31,7 @@ class Hero extends Component
 		owner.add(new MovableEntityData(floatMyWidth, floatMyHeight));
 		owner.add(new GravityEffect());
 		owner.add(new Movable());
+		owner.add(new LootBag());
 	}
 	
 	public function sayHitBox():Rectangle

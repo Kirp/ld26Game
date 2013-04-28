@@ -24,7 +24,8 @@ class CollidableBlock extends Component
 	override public function onAdded():Dynamic 
 	{
 		super.onAdded();
-		var sprMainSprite = new FillSprite(0x330000, rectMainBody.width, rectMainBody.height); 
+		var sprMainSprite = new TileSheetDisplayScriptedAnimation(64, 64, AssetHolder.pack.getTexture("StageTiles64x64"));
+		sprMainSprite.switchTileDisplay(0);
 		sprMainSprite.setXY(rectMainBody.x, rectMainBody.y);
 		owner.add(sprMainSprite);
 		

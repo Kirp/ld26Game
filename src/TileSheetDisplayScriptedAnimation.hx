@@ -70,7 +70,7 @@ class TileSheetDisplayScriptedAnimation extends ImageSprite
 		computeGridB();
 		intCellsPerWidth = Std.int(TileSheetTexture.width / TileTargetWidth);
 		intCellsPerheight = Std.int(TileSheetTexture.height / TileTargetHeight);
-		TileTexture.graphics.drawSubImage(TileSheetTexture, 0, 0, arrTileList[0].x*TileTargetWidth, arrTileList[0].y*TileTargetHeight, TileTargetWidth, TileTargetHeight);
+		//TileTexture.graphics.drawSubImage(TileSheetTexture, 0, 0, arrTileList[0].x*TileTargetWidth, arrTileList[0].y*TileTargetHeight, TileTargetWidth, TileTargetHeight);
 	
 	}
 	
@@ -173,30 +173,6 @@ class TileSheetDisplayScriptedAnimation extends ImageSprite
 		TileTexture.graphics.drawSubImage(TileSheetTexture, 0, 0, arrTileList[value].x*TileTargetWidth, arrTileList[value].y*TileTargetHeight, TileTargetWidth, TileTargetHeight);
 	}
 	
-	private function computeGrid(n:Int):Point
-	{ 
-		var XYCord:Point = new Point();
-		var x:Float = 0;
-		var y:Float = 0;
-		var pos:Float = (n * TileTargetWidth) / TileSheetTexture.width; 
-		var ceilinged = Math.ceil(pos);
-		if (ceilinged == 1) 
-		{
-			x = (n-1) * TileTargetWidth;
-			y = 0;
-		} else
-		{
-			var offsetx:Float = n - (TileTargetWidth * (ceilinged - 1));
-			x = (offsetx-1) * TileTargetWidth;
-			
-			y = (ceilinged-1) * TileTargetHeight;
-			
-		}
-		
-		XYCord.x = x;
-		XYCord.y = y;
-		return XYCord;
-	}
 	
 	private function computeGridB():Void
 	{

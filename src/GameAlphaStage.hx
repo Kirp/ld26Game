@@ -1,6 +1,7 @@
 package ;
 import flambe.Component;
 import flambe.display.FillSprite;
+import flambe.display.PatternSprite;
 import flambe.display.Sprite;
 import flambe.Entity;
 import flambe.input.PointerEvent;
@@ -28,6 +29,8 @@ class GameAlphaStage extends Component
 	public var scPointerRelease:SignalConnection;
 	
 	public var pointStartingPointPlayer:Point;
+	public var pointTreasureSpawn:Point;
+	public var intTreasureType:Int = 0;
 	
 	public function new() 
 	{
@@ -35,7 +38,8 @@ class GameAlphaStage extends Component
 		arrCollidableBlockList = [];
 		scPointerClick = System.pointer.down.connect(onPointerClick);
 		scPointerRelease = System.pointer.up.connect(onPointerRelease);
-		pointStartingPointPlayer = new Point(200,512);
+		pointStartingPointPlayer = new Point(200, 512);
+		pointTreasureSpawn = new Point(3840, 544);
 	}
 	
 	private function onPointerRelease(event:PointerEvent) 
@@ -58,10 +62,11 @@ class GameAlphaStage extends Component
 		entMainStageHolder.add(new CameraControl());
 		owner.addChild(entMainStageHolder);
 		
-		var sprBG = new FillSprite(0x303030, 8000, 5000);
+		var sprBG = new FillSprite(0x000000, 1000, 1000);
 		sprBG.x._ -= 800;
 		sprBG.y._ -= 800;
 		entMainStageHolder.addChild(new Entity().add(sprBG));
+		
 		
 		entStageManager = new Entity().add(new StageManager());
 		entMainStageHolder.addChild(entStageManager);
@@ -72,7 +77,10 @@ class GameAlphaStage extends Component
 		entStageManager.addChild(entDoor = new Entity().add(new SurfaceDoor(pointStartingPointPlayer.x, pointStartingPointPlayer.y)));
 		
 		//load treasure
-		entStageManager.addChild(entTreasure = new Entity().add(new Treasure(3840, 544)));
+		entStageManager.addChild(entTreasure = new Entity().add(new Treasure(pointTreasureSpawn.x, pointTreasureSpawn.y, intTreasureType)));
+		
+		//test load a monster
+		//entStageManager.addChild(new Entity().add(new Monster(200, 500)));
 		
 		//load up player
 		entStageManager.addChild(entPlayer = new Entity().add(new Hero(pointStartingPointPlayer.x+64, pointStartingPointPlayer.y)));
@@ -82,6 +90,8 @@ class GameAlphaStage extends Component
 		
 		arrCollidableBlockList = entStageManager.get(StageManager).sayHitBoxList(); //keep this line at the end of adding stage blocks for collision purposes
 	}
+	
+	
 	
 	public function loadUpStage():Void
 	{
@@ -93,6 +103,7 @@ class GameAlphaStage extends Component
 		stageManager.addColumn(1024, 512, 64, 64, 3);
 		stageManager.addColumn(1216, 512, 64, 64, 3);
 		stageManager.addColumn(1408, 512, 64, 64, 3);
+		stageManager.addBlock(1472, 576, 64, 64);
 		stageManager.addColumn(1600, 512, 64, 64, 3);
 		stageManager.addRow(1792, 512,  64,  64, 4);
 		stageManager.addRow(2048, 448,  64,  64, 1);
@@ -207,6 +218,22 @@ class GameAlphaStage extends Component
 		return finalB;
 	}
 	
+	public function checkIfTouchingDoor():Bool
+	{
+		var playerHB = entPlayer.get(Hero).sayHitBox();
+		var doorHB = entDoor.get(SurfaceDoor).sayHitbox();
+		return isRectangleCollidingWithRectangle(playerHB, doorHB);
+	}
+	
+	public function checkIfTouchingTreasure():Bool
+	{
+		var playerHB = entPlayer.get(Hero).sayHitBox();
+		var treasureHB = entTreasure.get(Treasure).sayHitbox();
+		if (playerHB == null || treasureHB == null) return false;
+		return isRectangleCollidingWithRectangle(playerHB, treasureHB);
+	}
+	
+	
 	override public function onUpdate(dt:Float):Dynamic 
 	{
 		super.onUpdate(dt);
@@ -215,9 +242,28 @@ class GameAlphaStage extends Component
 			trace("reset");
 			entPlayer.get(Hero).reset(pointStartingPointPlayer.x, pointStartingPointPlayer.y);
 			entMainStageHolder.get(CameraControl).reset();
+			entPlayer.get(LootBag).dropLoot();
+			entTreasure.get(Treasure).released();
 		}
 		
+		if (checkIfTouchingDoor())
+		{
+			trace("Touching door!");
+			if (entPlayer.get(LootBag).boolHasLoot == true)
+			{
+				trace("end of stage! winnar!");
+				entPlayer.get(Movable).stop();
+			}
+		}
 		
+		if (checkIfTouchingTreasure())
+		{
+			trace("Touching treasure!");
+			entPlayer.get(LootBag).gotLoot();
+			entTreasure.get(Treasure).taken(); 
+			
+		}
+			
 	}
 	
 	override public function onRemoved():Dynamic 

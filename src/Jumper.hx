@@ -29,8 +29,17 @@ class Jumper extends Component
 		{
 			if (intJumpTime < ConstantHolder.JUMPTIME)
 			{
-				owner.get(Sprite).y._ -= ConstantHolder.JUMPSPEED;
-				intJumpTime++;
+				var generateRect = owner.get(Hero).sayHitBox();
+				generateRect.y -= ConstantHolder.JUMPSPEED;
+				if (GameAlphaStage.isRectangleCollidingWithStageList(generateRect) == false)
+				{
+					owner.get(Sprite).y._ -= ConstantHolder.JUMPSPEED;
+					intJumpTime++;
+				} else 
+					{
+						intJumpTime = 0;
+						stopJump();
+					}
 			}else 
 				{
 					intJumpTime = 0;

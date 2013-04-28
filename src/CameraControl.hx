@@ -33,6 +33,14 @@ class CameraControl extends Component
 		trace("Camera ready");
 	}
 	
+	public function reset():Void
+	{
+		var sprOwner = owner.get(Sprite);
+		sprOwner.x._ = 0;
+		floatCameraValueX = sprTarget.x._-200;
+		trace(sprOwner.x._);
+	}
+	
 	override public function onUpdate(dt:Float):Dynamic 
 	{	
 		super.onUpdate(dt);
@@ -40,15 +48,18 @@ class CameraControl extends Component
 		{
 			if (sprTarget.x._ > floatCameraValueX+1000)
 			{
-				floatCameraValueX += ConstantHolder.WALKSPEED + 1;
+				floatCameraValueX += ConstantHolder.WALKSPEED;
 				updateCameraPosition();
 			}else
 				if(sprTarget.x._ < floatCameraValueX+200)
 				{
-					floatCameraValueX -= ConstantHolder.WALKSPEED +1;
+					floatCameraValueX -= ConstantHolder.WALKSPEED;
 					updateCameraPosition();
 				}
 		}
+		trace(owner.get(Sprite).x._);
 	}
+	
+	
 	
 }

@@ -34,6 +34,26 @@ class StageManager extends Component
 		owner.addChild(genEnt);
 	}
 	
+	public function addColumn(_x:Float, _y:Float, wid:Float, hei:Float, columnHeight:Int):Dynamic
+	{
+		for (len in 0...columnHeight)
+		{
+			var genEnt = new Entity().add(new CollidableBlock(_x, _y +(len*hei), wid, hei));
+			arrCollidableBlockList.push(genEnt);
+			owner.addChild(genEnt);
+		}
+	}
+	
+	public function addRow(_x:Float, _y:Float, wid:Float, hei:Float, columnWidth:Int):Dynamic
+	{
+		for (len in 0...columnWidth)
+		{
+			var genEnt = new Entity().add(new CollidableBlock(_x+(len*wid), _y, wid, hei));
+			arrCollidableBlockList.push(genEnt);
+			owner.addChild(genEnt);
+		}
+	}
+	
 	public function sayHitBoxList():Array<Entity>
 	{
 		return arrCollidableBlockList;

@@ -4,6 +4,7 @@ import flambe.display.FillSprite;
 import flambe.display.Sprite;
 import flambe.Entity;
 import flambe.input.PointerEvent;
+import flambe.math.Point;
 import flambe.math.Rectangle;
 import flambe.System;
 import flambe.util.SignalConnection;
@@ -23,12 +24,15 @@ class GameAlphaStage extends Component
 	public var scPointerClick:SignalConnection;
 	public var scPointerRelease:SignalConnection;
 	
+	public var pointStartingPointPlayer:Point;
+	
 	public function new() 
 	{
 		//initiate those that need to 
 		arrCollidableBlockList = [];
 		scPointerClick = System.pointer.down.connect(onPointerClick);
 		scPointerRelease = System.pointer.up.connect(onPointerRelease);
+		pointStartingPointPlayer = new Point(200,300);
 	}
 	
 	private function onPointerRelease(event:PointerEvent) 
@@ -51,35 +55,62 @@ class GameAlphaStage extends Component
 		entMainStageHolder.add(new CameraControl());
 		owner.addChild(entMainStageHolder);
 		
-		var sprBG = new FillSprite(0x303030, System.stage.width, System.stage.height);
+		var sprBG = new FillSprite(0x303030, 5000, 5000);
+		sprBG.x._ -= 800;
 		entMainStageHolder.addChild(new Entity().add(sprBG));
 		
 		entStageManager = new Entity().add(new StageManager());
 		entMainStageHolder.addChild(entStageManager);
 		
-		var stageManager = entStageManager.get(StageManager);
-		stageManager.addBlock(10, 300, 100, 100);
-		stageManager.addBlock(100, 350, 100, 100);
-		stageManager.addBlock(200, 350, 100, 100);
-		stageManager.addBlock(300, 350, 100, 100);
-		stageManager.addBlock(400, 350, 100, 100);
-		stageManager.addBlock(500, 350, 100, 100);
-		stageManager.addBlock(600, 350, 100, 100);
-		stageManager.addBlock(700, 350, 100, 100);
-		stageManager.addBlock(800, 350, 100, 100);
-		stageManager.addBlock(900, 300, 100, 100);
-		stageManager.addBlock(1000, 300, 100, 100);
-		stageManager.addBlock(1100, 300, 100, 100);
-		stageManager.addBlock(1200, 300, 100, 100);
+		loadUpStage();
+		
 		
 		
 		//load up player
-		entStageManager.addChild(entPlayer = new Entity().add(new Hero(200, 300)));
+		entStageManager.addChild(entPlayer = new Entity().add(new Hero(pointStartingPointPlayer.x, pointStartingPointPlayer.y)));
 		entPlayer.add(new Jumper());
 		
 		entMainStageHolder.get(CameraControl).setTarget(entPlayer.get(Sprite));
 		
-		arrCollidableBlockList = stageManager.sayHitBoxList(); //keep this line at the end of adding stage blocks for collision purposes
+		arrCollidableBlockList = entStageManager.get(StageManager).sayHitBoxList(); //keep this line at the end of adding stage blocks for collision purposes
+	}
+	
+	public function loadUpStage():Void
+	{
+		var stageManager = entStageManager.get(StageManager);
+		
+		stageManager.addColumn(0, 0, 64, 64, 10);
+		stageManager.addRow(64, 576,  64,  64, 10);
+		stageManager.addRow(704, 512,  64,  64, 3);
+		stageManager.addColumn(1024, 512, 64, 64, 3);
+		stageManager.addColumn(1216, 512, 64, 64, 3);
+		stageManager.addColumn(1408, 512, 64, 64, 3);
+		stageManager.addColumn(1600, 512, 64, 64, 3);
+		stageManager.addRow(1792, 512,  64,  64, 4);
+		stageManager.addRow(2048, 448,  64,  64, 1);
+		stageManager.addRow(2176, 512,  64,  64, 4);
+		stageManager.addRow(2368, 384,  64,  64, 4);
+		stageManager.addRow(2624, 320,  64,  64, 1);
+		stageManager.addRow(2048, 256,  64,  64, 4);
+		
+		//stageManager.addBlock(74, 364,  64,  64);
+		//stageManager.addBlock(138, 350,  64,  64);
+		//stageManager.addBlock(202, 350,  64,  64);
+		//stageManager.addBlock(266, 350,  64,  64);
+		//stageManager.addBlock(330, 350,  64,  64);
+		//stageManager.addBlock(394, 350,  64,  64);
+		//stageManager.addBlock(458, 350,  64,  64);
+		//stageManager.addBlock(522, 350,  64,  64);
+		//stageManager.addBlock(586, 300,  64,  64);
+		//stageManager.addBlock(650, 300,  64,  64);
+		//stageManager.addBlock(714, 300,  64,  64);
+		//stageManager.addBlock(778, 300,  64,  64);
+		//stageManager.addColumn(0, 0, 64, 64, 10);
+		//stageManager.addRow(778, 300,  64,  64, 10);
+		//stageManager.addRow(1610, 400,  64,  64, 10);
+		//stageManager.addRow(2314, 300,  64,  64, 10);
+		//stageManager.addColumn(2954, 0,  64,  64, 10);
+		
 	}
 	
 	public static function isRectangleCollidingWithStageList(checker:Rectangle):Bool
@@ -126,6 +157,17 @@ class GameAlphaStage extends Component
 			if ((Top && Bot) && (Left && Right)) finalB = true;
 		}
 		return finalB;
+	}
+	
+	override public function onUpdate(dt:Float):Dynamic 
+	{
+		super.onUpdate(dt);
+		if (entPlayer.get(Sprite).y._ > 700)
+		{
+			trace("reset");
+			entPlayer.get(Hero).reset(pointStartingPointPlayer.x, pointStartingPointPlayer.y);
+			entMainStageHolder.get(CameraControl).reset();
+		}
 	}
 	
 }

@@ -38,4 +38,9 @@ class Hero extends Component
 		var myHitBox = new Rectangle(mySprite.x._, mySprite.y._, floatMyWidth, floatMyHeight);
 		return myHitBox;
 	}
+	
+	public function reset(_x:Float, _y:Float):Void
+	{
+		mySprite.setXY(_x, _y);
+	}
 }

@@ -21,6 +21,8 @@ class TextBlurb extends Component
 	{
 		font = new Font(AssetHolder.pack, "handel");
 		say = sayThis;
+		floatMyx = _x;
+		floatMyy = _y;
 	}
 	
 	override public function onAdded():Dynamic 

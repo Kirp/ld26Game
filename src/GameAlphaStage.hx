@@ -46,6 +46,7 @@ class GameAlphaStage extends Component
 	{
 		trace("released");
 		//entPlayer.get(Jumper).stopJump();
+		//exitToStory();
 	}
 	
 	private function onPointerClick(event:PointerEvent) 
@@ -253,6 +254,7 @@ class GameAlphaStage extends Component
 			{
 				trace("end of stage! winnar!");
 				entPlayer.get(Movable).stop();
+				exitToStory();
 			}
 		}
 		
@@ -271,5 +273,12 @@ class GameAlphaStage extends Component
 		super.onRemoved();
 		scPointerClick.dispose();
 		scPointerRelease.dispose();
+	}
+	
+	public function exitToStory():Void
+	{
+		System.root.removeChild(entMainStageHolder);
+		System.root.remove(this);
+		System.root.add(new Story2());
 	}
 }

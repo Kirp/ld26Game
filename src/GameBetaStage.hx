@@ -1,4 +1,5 @@
 package ;
+import flambe.System;
 
 /**
  * ...
@@ -63,6 +64,11 @@ class GameBetaStage extends GameAlphaStage
 		
 	}
 	
-
+	override public function exitToStory():Void 
+	{ 
+		System.root.removeChild(entMainStageHolder);
+		System.root.remove(this);
+		System.root.add(new Story3());
+	}
 	
 }

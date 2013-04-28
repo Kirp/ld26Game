@@ -22,7 +22,7 @@ class Main
 		
         loader.success.connect(function (pack) {
 			AssetHolder.pack = pack;
-			System.root.add(new GameGammaStage());
+			System.root.add(new TitleScreen());
 		});
 		
 		loader.error.connect(function (message) {

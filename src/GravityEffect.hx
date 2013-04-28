@@ -54,5 +54,6 @@ class GravityEffect extends Component
 			boolOnGround = false;
 		}else boolOnGround = true;
 	}
+
 	
 }
